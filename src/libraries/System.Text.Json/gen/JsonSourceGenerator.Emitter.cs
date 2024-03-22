@@ -593,13 +593,12 @@ namespace System.Text.Json.SourceGeneration
                 {
                     PropertyGenerationSpec property = properties[i];
                     string propertyName = property.NameSpecifiedInSourceCode;
-                    string declaringTypeFQN = property.DeclaringType.FullyQualifiedName;
                     string propertyTypeFQN = property.PropertyType.FullyQualifiedName;
 
                     string getterValue = property switch
                     {
                         { DefaultIgnoreCondition: JsonIgnoreCondition.Always } => "null",
-                        { CanUseGetter: true } => $"static obj => (({declaringTypeFQN})obj).{propertyName}",
+                        { CanUseGetter: true } => $"static obj => obj.{propertyName}",
                         { CanUseGetter: false, HasJsonInclude: true }
                             => $"""static _ => throw new {InvalidOperationExceptionTypeRef}("{string.Format(ExceptionMessages.InaccessibleJsonIncludePropertiesNotSupported, typeGenerationSpec.TypeRef.Name, propertyName)}")""",
                         _ => "null"
@@ -610,8 +609,6 @@ namespace System.Text.Json.SourceGeneration
                         { DefaultIgnoreCondition: JsonIgnoreCondition.Always } => "null",
                         { CanUseSetter: true, IsInitOnlySetter: true }
                             => $"""static (obj, value) => throw new {InvalidOperationExceptionTypeRef}("{ExceptionMessages.InitOnlyPropertySetterNotSupported}")""",
-                        { CanUseSetter: true } when typeGenerationSpec.TypeRef.IsValueType
-                            => $"""static (obj, value) => {UnsafeTypeRef}.Unbox<{declaringTypeFQN}>(obj).{propertyName} = value!""",
                         { CanUseSetter: true }
                             => $"""static (obj, value) => obj.{propertyName} = value!""",
                         { CanUseSetter: false, HasJsonInclude: true }
@@ -1320,7 +1317,7 @@ namespace System.Text.Json.SourceGeneration
 
                 foreach (KeyValuePair<string, string> name_varName_pair in _propertyNames)
                 {
-                    writer.WriteLine($$"""private static readonly {{JsonEncodedTextTypeRef}} {{name_varName_pair.Value}} = {{JsonEncodedTextTypeRef}}.Encode({{FormatStringLiteral(name_varName_pair.Key)}}u8);""");
+                    writer.WriteLine($$"""private static readonly {{JsonEncodedTextTypeRef}} {{name_varName_pair.Value}} = {{JsonEncodedTextTypeRef}}.Encode({{FormatStringLiteral(name_varName_pair.Key)}});""");
                 }
 
                 return CompleteSourceFileAndReturnText(writer);
