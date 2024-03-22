@@ -1309,6 +1309,25 @@ namespace System.Text.Json.Serialization.Metadata
         public System.Text.Json.Serialization.Metadata.JsonTypeInfo PropertyTypeInfo { get { throw null; } init { } }
         public System.Action<object, T?>? Setter { get { throw null; } init { } }
     }
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+    public sealed partial class JsonPropertyInfoValues<T,U>
+    {
+        public JsonPropertyInfoValues() { }
+        public System.Text.Json.Serialization.JsonConverter<U>? Converter { get { throw null; } init { } }
+        public System.Type DeclaringType { get { throw null; } init { } }
+        public System.Func<T, U?>? Getter { get { throw null; } init { } }
+        public bool HasJsonInclude { get { throw null; } init { } }
+        public System.Text.Json.Serialization.JsonIgnoreCondition? IgnoreCondition { get { throw null; } init { } }
+        public bool IsExtensionData { get { throw null; } init { } }
+        public bool IsProperty { get { throw null; } init { } }
+        public bool IsPublic { get { throw null; } init { } }
+        public bool IsVirtual { get { throw null; } init { } }
+        public string? JsonPropertyName { get { throw null; } init { } }
+        public System.Text.Json.Serialization.JsonNumberHandling? NumberHandling { get { throw null; } init { } }
+        public string PropertyName { get { throw null; } init { } }
+        public System.Text.Json.Serialization.Metadata.JsonTypeInfo PropertyTypeInfo { get { throw null; } init { } }
+        public System.Action<T, U?>? Setter { get { throw null; } init { } }
+    }
     public abstract partial class JsonTypeInfo
     {
         internal JsonTypeInfo() { }

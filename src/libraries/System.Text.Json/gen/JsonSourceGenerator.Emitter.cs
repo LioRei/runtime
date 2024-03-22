@@ -613,7 +613,7 @@ namespace System.Text.Json.SourceGeneration
                         { CanUseSetter: true } when typeGenerationSpec.TypeRef.IsValueType
                             => $"""static (obj, value) => {UnsafeTypeRef}.Unbox<{declaringTypeFQN}>(obj).{propertyName} = value!""",
                         { CanUseSetter: true }
-                            => $"""static (obj, value) => (({declaringTypeFQN})obj).{propertyName} = value!""",
+                            => $"""static (obj, value) => obj.{propertyName} = value!""",
                         { CanUseSetter: false, HasJsonInclude: true }
                             => $"""static (obj, value) => throw new {InvalidOperationExceptionTypeRef}("{string.Format(ExceptionMessages.InaccessibleJsonIncludePropertiesNotSupported, typeGenerationSpec.TypeRef.Name, property.MemberName)}")""",
                         _ => "null",
@@ -636,7 +636,7 @@ namespace System.Text.Json.SourceGeneration
                     }
 
                     writer.WriteLine($$"""
-                        var {{InfoVarName}}{{i}} = new {{JsonPropertyInfoValuesTypeRef}}<{{propertyTypeFQN}}>
+                        var {{InfoVarName}}{{i}} = new {{JsonPropertyInfoValuesTypeRef}}<{{property.DeclaringType.FullyQualifiedName}}, {{propertyTypeFQN}}>
                         {
                             IsProperty = {{FormatBoolLiteral(property.IsProperty)}},
                             IsPublic = {{FormatBoolLiteral(property.IsPublic)}},
@@ -1320,7 +1320,7 @@ namespace System.Text.Json.SourceGeneration
 
                 foreach (KeyValuePair<string, string> name_varName_pair in _propertyNames)
                 {
-                    writer.WriteLine($$"""private static readonly {{JsonEncodedTextTypeRef}} {{name_varName_pair.Value}} = {{JsonEncodedTextTypeRef}}.Encode({{FormatStringLiteral(name_varName_pair.Key)}});""");
+                    writer.WriteLine($$"""private static readonly {{JsonEncodedTextTypeRef}} {{name_varName_pair.Value}} = {{JsonEncodedTextTypeRef}}.Encode({{FormatStringLiteral(name_varName_pair.Key)}}u8);""");
                 }
 
                 return CompleteSourceFileAndReturnText(writer);
